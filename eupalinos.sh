@@ -14,7 +14,7 @@ fi
 
 im_version=$(convert -version | grep "Version:" | cut -d' ' -f 3)
 if [[ $im_version != 6.8.3-3 ]]; then
-	osascript -e 'tell app "Finder" to display dialog "Warning: This script has only been tested with ImageMagick 6.8.3-3"'
+	osascript -e 'tell app "Finder" to display dialog "Warning: This script has only been tested with ImageMagick 6.8.3-3.  Script will proceed."'
 fi
 
 export PATH=/usr/local/bin:"$PATH"
