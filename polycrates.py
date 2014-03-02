@@ -2,26 +2,40 @@
 import sys
 import os
 import re
+import ctypes
 from subprocess import *
 
 if sys.platform == "linux" or sys.platform == "linux2":
-		def showInvalidArgError():
-			print "This script takes a single directory for its arguments."
-		convert_path = '/usr/local/bin/convert'
-		def showIMError():
-			print "ImageMagick was not found in %s." % convert_path
+    def showInvalidArgError():
+        print "This script takes a single directory for its arguments."
+    convert_path = '/usr/local/bin/convert'
+    convert_cmd = convert_path
+    def showIMError():
+        print "ImageMagick was not found in %s." % convert_path
+    def showIMVersionWarning(version):
+        print "ImageMagick version %s has not been tested." % version
 elif sys.platform == "darwin":
-		def showInvalidArgError():
-			call("""osascript -e 'tell app "Finder" to display dialog "You must drop a folder onto this application."'""", shell=True)
-		convert_path = '/usr/local/bin/convert'
-		def showIMError():
-			call("""osascript -e 'tell app "Finder" to display dialog "You must first install ImageMagick to use this application."'""", shell=True)
+    def showInvalidArgError():
+        call("""osascript -e 'tell app "Finder" to display dialog "You must drop a folder onto this application."'""", shell=True)
+    convert_path = '/usr/local/bin/convert'
+    convert_cmd = convert_path
+    def showIMError():
+        call("""osascript -e 'tell app "Finder" to display dialog "You must first install ImageMagick to use this application."'""", shell=True)
+    def showIMVersionWarning(version):
+        call("""osascript -e 'tell app "Finder" to display dialog "ImageMagick version %s has not been tested." % version'""" % version, shell=True)
 elif sys.platform == "win32":
-		def showInvalidArgError():
-			call('Msg * "You must drop a folder onto this application."', shell=True)
-		convert_path = 'C:\Windows\System32\convert.exe'
-		def showIMError():
-			call('Msf * "You must first install ImageMagick to use this application."', shell=True)
+    def showInvalidArgError():
+        MessageBox = ctypes.windll.user32.MessageBoxA
+        MessageBox(None, 'You must drop a folder onto this application.', 'Error:', 0)
+    convert_path = 'C:\Windows\System32\convert.exe'
+    convert_cmd = convert_cmd
+    def showIMError():
+        MessageBox = ctypes.windll.user32.MessageBoxA
+        MessageBox(None, 'You must drop a folder onto this application.', 'Error:', 0)
+    def showIMVersionWarning(version):
+        MessageBox = ctypes.windll.user32.MessageBoxA
+        MessageBox(None, "ImageMagick version %s has not been tested." % version, 'Warning:', 0)
+            
 
 def isKnownIMVersion(v):
 	return v >= '6.8.3-3'
@@ -37,7 +51,7 @@ if not os.path.exists(convert_path):
 	sys.exit(1)
 
 #Checking ImageMagick Version
-im_version = check_output(['convert', '-version']).split(' ')[2]
+im_version = check_output([convert_cmd, '-version']).split(' ')[2]
 if not isKnownIMVersion(im_version):
 	print "Warning: version %s is not known to work with this script." % im_version
 
@@ -57,9 +71,9 @@ for f in os.listdir(src_dir):
 	if len(f) < 4 or f[-4:] != '.psd':
 			continue
 	root = f[:-4]
-	call(['convert', os.path.join(src_dir,f), os.path.join(pres_dir,root + '_tmp_%02d.png')])
+	call([convert_cmd, os.path.join(src_dir,f), os.path.join(pres_dir,root + '_tmp_%02d.png')])
 	prev = os.path.join(pres_dir, root + '_01.png')
-	call(['convert', '-background', 'white', os.path.join(pres_dir, root + '_tmp_01.png'), prev])
+	call([convert_cmd, '-background', 'white', os.path.join(pres_dir, root + '_tmp_01.png'), prev])
 
 	os.remove(os.path.join(pres_dir, root + '_tmp_00.png'))
 	os.remove(os.path.join(pres_dir, root + '_tmp_01.png'))
@@ -72,7 +86,7 @@ for f in os.listdir(src_dir):
 	for j in range(2 , N+2):
 		now = os.path.join(pres_dir, root+'_%02d.png' % j)
 		tmp = os.path.join(pres_dir, root + '_tmp_%02d.png' % j)
-		call(['convert', prev, tmp , '-composite', now])
+		call([convert_cmd, prev, tmp , '-composite', now])
 		os.remove(tmp)
 		prev = now 
 
@@ -80,4 +94,4 @@ for f in os.listdir(src_dir):
 for f in os.listdir(pres_dir):
 		if len(f) < 4 or f[-4:] != '.png':
 			continue
-		call(['convert', os.path.join(pres_dir, f), '-resize', '25%', os.path.join(upload_dir,f)])
+		call([convert_cmd, os.path.join(pres_dir, f), '-resize', '25%', os.path.join(upload_dir,f)])
