@@ -1,4 +1,5 @@
 #!/usr/bin/python
+
 import sys
 import os
 import re
@@ -73,7 +74,7 @@ for f in os.listdir(src_dir):
 	root = f[:-4]
 	call([convert_cmd, os.path.join(src_dir,f), os.path.join(pres_dir,root + '_tmp_%02d.png')])
 	prev = os.path.join(pres_dir, root + '_01.png')
-	call([convert_cmd, '-background', 'white', os.path.join(pres_dir, root + '_tmp_01.png'), prev])
+	call([convert_cmd, '-flatten', os.path.join(pres_dir, root + '_tmp_01.png'), prev])
 
 	os.remove(os.path.join(pres_dir, root + '_tmp_00.png'))
 	os.remove(os.path.join(pres_dir, root + '_tmp_01.png'))
