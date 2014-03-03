@@ -48,9 +48,10 @@ To convert the script to a droplet in Finder
 1. Open Automator from the Applications folder
 2. Choose Workflow for the type of Document
 3. Drag "Run Shell Script" (under Utilities) from the Actions Menu to the workflow.
-4. Change the "Pass input" selector to "as arguments."
-5. Copy and paste the contents of polycrates.pys to replace the default script.
-6. Save and choose Application as the file format.
+4. Change the shell selector to "/usr/bin/python."
+5. Change the "Pass input" selector to "as arguments."
+5. Copy and paste the contents of polycrates.py to replace the default script.
+6. Save and choose "Application" as the file format.
 
 ## Windows Installation
 The script depends on pythonwin32 and the ImageMagick library.
