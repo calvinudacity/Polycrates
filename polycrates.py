@@ -28,8 +28,8 @@ elif sys.platform == "win32":
     def showInvalidArgError():
         MessageBox = ctypes.windll.user32.MessageBoxA
         MessageBox(None, 'You must drop a folder onto this application.', 'Error:', 0)
-    convert_path = 'C:\Windows\System32\convert.exe'
-    convert_cmd = convert_cmd
+    convert_path = [x for x in check_output('where convert').splitlines() if 'ImageMagick' in x].pop()
+    convert_cmd = convert_path
     def showIMError():
         MessageBox = ctypes.windll.user32.MessageBoxA
         MessageBox(None, 'You must drop a folder onto this application.', 'Error:', 0)

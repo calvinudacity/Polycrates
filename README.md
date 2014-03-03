@@ -75,7 +75,7 @@ which should display an image of a wizard.
 If this fails, then download the latest binary release from [here](http://imagemagick.org/script/binary-releases.php#windows).  Repeat the test above.
 
 ### Creating a Droplet on Windows
-Simply copy the file polycrates.pys to the desired location and add shortcuts to suite the user needs.  With pywin32 installed, Windows should recognize the file an a python script from the .pys suffix.
+Simply copy the file polycrates.py to the desired location and add shortcuts to suite the user needs.  With pywin32 installed, Windows should recognize the file an a python script from the .py suffix.
 
 ## Contact
 Please direct equations to Charles Brubaker at cb@udacity.com.
